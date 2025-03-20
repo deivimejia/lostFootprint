@@ -1,13 +1,12 @@
 import { PetPost } from '../../../data/postgres/models/pet-post.model';
-import { CustomError } from '../../../domain';
-import { CreatePostDto } from '../../../domain/dtos/post-pet/create-post.dto';
+import { CreatePostDto, CustomError } from '../../../domain';
 
 export class CreatorPetPostService {
-  async execute(userData: CreatePostDto) {
+  async execute(petPostData: CreatePostDto) {
     const petPost = new PetPost();
-    petPost.petName = userData.petName;
-    petPost.description = userData.description;
-    petPost.imageUrl = userData.imageUrl;
+    petPost.petName = petPostData.petName;
+    petPost.description = petPostData.description;
+    petPost.imageUrl = petPostData.imageUrl;
 
     try {
       await petPost.save();

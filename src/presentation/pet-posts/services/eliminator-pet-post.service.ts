@@ -1,4 +1,4 @@
-import { PetPost, Status } from '../../../data/postgres/models/pet-post.model';
+import { PetPost } from '../../../data/postgres/models/pet-post.model';
 import { CustomError } from '../../../domain';
 
 export class EliminatorPetPostService {

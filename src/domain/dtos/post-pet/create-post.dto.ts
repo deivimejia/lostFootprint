@@ -12,6 +12,7 @@ export class CreatePostDto {
     if (!petName) return ['Pet name is required'];
     if (!description) return ['description is required'];
     if (!imageUrl) return ['image URL is required '];
+    if (!regularExp.imageUrlRegex.test(imageUrl)) return ['Image Url invalid'];
 
     return [
       undefined,
