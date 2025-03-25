@@ -5,7 +5,14 @@ export class FinderPetsPostService {
   async execute() {
     try {
       return await PetPost.find({
-        select: ['petName', 'userId', 'description', 'imageUrl', 'hasfound'],
+        select: [
+          'id',
+          'petName',
+          'userId',
+          'description',
+          'imageUrl',
+          'hasfound',
+        ],
         where: { status: Status.APPROVED },
       });
     } catch (error) {

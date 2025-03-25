@@ -10,6 +10,8 @@ import {
   RejectPetPostService,
   UpdaterPetPostService,
 } from './services';
+import { AuthMiddleware } from '../../common/middleware/authMiddleware';
+import { UserRole } from '../../data/postgres/models/user.model';
 
 export class PetPostsRoutes {
   static get routes(): Router {
@@ -31,12 +33,30 @@ export class PetPostsRoutes {
       approvedPetPostService,
       rejectPetPostService
     );
+    router.use(AuthMiddleware.protect);
 
-    router.post('/', controller.register);
-    router.delete('/:id', controller.delete);
-    router.get('/:id', controller.findOne);
+    router.post(
+      '/',
+      AuthMiddleware.restricTo(UserRole.USER),
+      controller.register
+    );
+
     router.get('/', controller.findAll);
-    router.patch('/:id', controller.patch);
+    router.get('/:id', controller.findOne);
+
+    router.patch(
+      '/:id',
+      AuthMiddleware.restricTo(UserRole.ADMIN),
+      controller.patch
+    ); //TODO Falta agregar autorización para el usuario creador
+
+    router.delete(
+      '/:id',
+      AuthMiddleware.restricTo(UserRole.ADMIN),
+      controller.delete
+    ); //TODO Falta agregar autorización para el usuario creador
+
+    router.use(AuthMiddleware.restricTo(UserRole.ADMIN));
     router.patch('/:id/approve', controller.patchApprove);
     router.patch('/:id/reject', controller.patchReject);
 

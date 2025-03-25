@@ -1,5 +1,10 @@
 import { Request, Response } from 'express';
-import { CreatedUserDto, CustomError, UpdateUserDto } from '../../domain';
+import {
+  CreatedUserDto,
+  CustomError,
+  LoginUserDto,
+  UpdateUserDto,
+} from '../../domain';
 import {
   EliminatorUserPostService,
   FinderUserPostService,
@@ -8,6 +13,7 @@ import {
   RegisterUserPostService,
   UpdaterUserPostService,
 } from './services';
+import { envs } from '../../config';
 
 export class UserController {
   constructor(
@@ -52,10 +58,23 @@ export class UserController {
   };
 
   login = (req: Request, res: Response) => {
+    const [error, loginUserDto] = LoginUserDto.execute(req.body);
+    if (error) {
+      return res.status(422).json({ message: error });
+    }
     this.loginUserService
-      .execute()
-      .then((message) => res.status(501).json(message))
-      .catch((error) => res.status(400));
+      .execute(loginUserDto!)
+      .then((data) => {
+        console.log(data);
+        res.cookie('token', data.token, {
+          httpOnly: true,
+          secure: envs.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 3 * 60 * 1000,
+        });
+        return res.status(200).json({ user: data.user });
+      })
+      .catch((err) => this.handleError(err, res));
   };
   register = (req: Request, res: Response) => {
     const [error, createdUserDto] = CreatedUserDto.execute(req.body);
@@ -74,5 +93,14 @@ export class UserController {
       .execute(id, updaterUserDto!)
       .then((user) => res.status(201).json(user))
       .catch((error) => this.handleError(error, res));
+  };
+
+  validateAccount = (req: Request, res: Response) => {
+    const { token } = req.params;
+    console.log(token);
+    this.registerUserService
+      .validateAccount(token)
+      .then(() => res.send('Email validated successfully'))
+      .catch((err) => this.handleError(err, res));
   };
 }
