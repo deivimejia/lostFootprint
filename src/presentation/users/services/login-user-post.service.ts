@@ -32,7 +32,7 @@ export class LoginUserPostService {
       },
     });
     if (!user) {
-      throw CustomError.notFound('User not found');
+      throw CustomError.notFound('Invalid credentials');
     }
     return user;
   }

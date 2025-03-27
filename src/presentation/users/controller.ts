@@ -70,7 +70,7 @@ export class UserController {
           httpOnly: true,
           secure: envs.NODE_ENV === 'production',
           sameSite: 'strict',
-          maxAge: 3 * 60 * 1000,
+          maxAge: 3 * 60 * 60 * 1000,
         });
         return res.status(200).json({ user: data.user });
       })

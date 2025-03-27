@@ -22,7 +22,7 @@ export class AuthMiddleware {
       req.body.sessionUser = user;
       next();
     } catch (error) {
-      return res.status(401).json({ message: 'Internal server error' });
+      return res.status(501).json({ message: 'Internal server error' });
     }
   }
 
