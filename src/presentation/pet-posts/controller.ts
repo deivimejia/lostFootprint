@@ -34,9 +34,10 @@ export class PetPostsController {
 
   register = (req: Request, res: Response) => {
     const [error, createPostDto] = CreatePostDto.execute(req.body);
+    const userId = req.body.sessionUser.id;
     if (error) return res.status(422).json({ message: error });
     this.creatorPetPostService
-      .execute(createPostDto!)
+      .execute(createPostDto!, userId)
       .then((message) => res.status(201).json(message))
       .catch((error) => res.status(400));
   };

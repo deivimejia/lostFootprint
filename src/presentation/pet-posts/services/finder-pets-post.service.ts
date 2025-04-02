@@ -5,15 +5,20 @@ export class FinderPetsPostService {
   async execute() {
     try {
       return await PetPost.find({
-        select: [
-          'id',
-          'petName',
-          'userId',
-          'description',
-          'imageUrl',
-          'hasfound',
-        ],
+        select: {
+          id: true,
+          petName: true,
+          description: true,
+          imageUrl: true,
+          hasfound: true,
+          user: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
         where: { status: Status.APPROVED },
+        relations: { user: true },
       });
     } catch (error) {
       throw CustomError.internalServerError('Error trying to find pet posts');

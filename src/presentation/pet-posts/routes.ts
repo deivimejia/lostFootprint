@@ -12,11 +12,15 @@ import {
 } from './services';
 import { AuthMiddleware } from '../../common/middleware/authMiddleware';
 import { UserRole } from '../../data/postgres/models/user.model';
+import { FinderUserPostService } from '../users/services';
 
 export class PetPostsRoutes {
   static get routes(): Router {
     const router = Router();
-    const creatorPetPostService = new CreatorPetPostService();
+    const finderUserPostService = new FinderUserPostService();
+    const creatorPetPostService = new CreatorPetPostService(
+      finderUserPostService
+    );
     const eliminatorPetPostService = new EliminatorPetPostService();
     const finderPetPostService = new FinderPetPostService();
     const finderPetsPostService = new FinderPetsPostService();

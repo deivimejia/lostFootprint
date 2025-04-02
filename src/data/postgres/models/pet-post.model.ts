@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from './user.model';
 
 export enum Status {
   PENDING = 'pending',
@@ -11,12 +19,12 @@ export class PetPost extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar', {
-    length: 30,
-    nullable: false,
-    default: 'unknown',
-  })
-  userId: string;
+  // @Column('varchar', {
+  //   length: 30,
+  //   nullable: false,
+  //   default: 'unknown',
+  // })
+  // userId: string;
 
   @Column('varchar', {
     length: 255,
@@ -53,4 +61,8 @@ export class PetPost extends BaseEntity {
     nullable: false,
   })
   createdAt: Date;
+
+  @ManyToOne(() => User, (user) => user.petPost)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 }

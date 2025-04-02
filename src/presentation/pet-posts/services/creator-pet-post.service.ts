@@ -1,12 +1,19 @@
 import { PetPost } from '../../../data/postgres/models/pet-post.model';
+
 import { CreatePostDto, CustomError } from '../../../domain';
+import { FinderUserPostService } from '../../users/services';
 
 export class CreatorPetPostService {
-  async execute(petPostData: CreatePostDto) {
+  constructor(private readonly findUserService: FinderUserPostService) {}
+
+  async execute(petPostData: CreatePostDto, userId: string) {
     const petPost = new PetPost();
+
+    const user = await this.findUserService.execute(userId);
     petPost.petName = petPostData.petName;
     petPost.description = petPostData.description;
     petPost.imageUrl = petPostData.imageUrl;
+    petPost.user = user;
 
     try {
       await petPost.save();
